@@ -11,7 +11,7 @@ export default function CampoTitulo({ valor }) {
 
 const styles = StyleSheet.create({
   titulo: {
-      fontSize: 35,
+      fontSize: 20,
       color: 'white',
       fontWeight: 'bold',
       paddingLeft: 100,
