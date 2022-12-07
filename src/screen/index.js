@@ -1,2 +1,5 @@
 export { default as HomeScreen } from './Home'
-export { default as FichaClinica } from './FichaClinica'
+export { default as AdminPacientes } from './AdminPacientes'
+export { default as AdminClientes } from './AdminClientes'
+export { default as ReporteVentasResumido } from './ReporteVentasResumido'
+export { default as ReporteVentasDetallado } from './ReporteVentasDetallado'

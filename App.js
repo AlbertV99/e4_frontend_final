@@ -4,7 +4,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HomeScreen,
-    FichaClinica,
+    AdminPacientes,
+    AdminClientes,
+    ReporteVentasResumido,
+    ReporteVentasDetallado
 } from './src/screen';
 
 
@@ -15,7 +18,10 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home" >
         <Stack.Screen name="Home" component={HomeScreen} options={{headerShown: false}}/>
-        <Stack.Screen name="FichaClinica" component={FichaClinica} options={{headerShown: false}} />
+        <Stack.Screen name="AdminPacientes" component={AdminPacientes} options={{headerShown: false}} />
+        <Stack.Screen name="AdminClientes" component={AdminClientes} options={{headerShown: false}} />
+        <Stack.Screen name="ReporteVentasResumido" component={ReporteVentasResumido} options={{headerShown: false}} />
+        <Stack.Screen name="ReporteVentasDetallado" component={ReporteVentasDetallado} options={{headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
