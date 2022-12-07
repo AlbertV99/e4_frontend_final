@@ -28,7 +28,7 @@ export default function ReporteVentasDetallado({navigation}) {
         <View style={{flex:1, backgroundColor: tema.fondo.color}}>
             <Text/>
             <Text/>
-            <CampoTitulo valor="ADMINISTRADOR DE CLIENTES"/>
+            <CampoTitulo valor="REPORTE VENTAS DETALLADO"/>
             <Text/>
             <View style={styles.button}>
                 <SegmentedButtons
@@ -72,7 +72,7 @@ export default function ReporteVentasDetallado({navigation}) {
     return(
         <View style={styles.container}>
             <Text/>
-            <CampoSubTitulo valor="TABLA ADMINISTRADOR DE CLIENTES"/>
+            <CampoSubTitulo valor="TABLA REPORTE VENTAS DETALLADO"/>
             
 
         </View>
@@ -84,7 +84,7 @@ export default function ReporteVentasDetallado({navigation}) {
     return(
         <View style={styles.container}>
             <Text/>
-            <CampoSubTitulo valor="EDITAR ADMINISTRADOR DE CLIENTES"/>
+            <CampoSubTitulo valor="EDITAR REPORTE VENTAS DETALLADO"/>
 
             
 
