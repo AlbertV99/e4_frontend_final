@@ -20,9 +20,9 @@ export default function AdminClientes({navigation}) {
     const [value, setValue] = useState('');
 
     /*CONTROLADOR */
-    let tablaControlador;
+    var tablaControlador;
     useEffect(()=>{
-        tablaControlador=new Controlador("producto");
+        tablaControlador=new Controlador("cliente");
         cargarTabla();
 
     },[])
@@ -31,6 +31,9 @@ export default function AdminClientes({navigation}) {
         let temp = [ ] ;
         tablaControlador.temporal.map((reg)=> { temp.push(Object.values(reg))})
         setDatosTabla(temp);
+    }
+    const retControlador= () => {
+        return tablaControlador;
     }
 
 
@@ -84,36 +87,57 @@ export default function AdminClientes({navigation}) {
             </View>
             <Text></Text>
             <ScrollView>
-                {form && <FormularioAdminPcientes ></FormularioAdminPcientes>}
-                {tabla && <TablaAdminPacientes datos={datosTabla}/>}
+                {form && <FormularioCliente  controlador={retControlador}></FormularioCliente>}
+                {tabla && <TablaCliente datos={datosTabla}/>}
                 {editar && <Editar/>}
             </ScrollView>
         </View>
     );
 }
 
- function FormularioAdminPcientes(){
+ function FormularioCliente(){
 
+    const [datosForm,setDatosForm]= useState({})
+    const guardarDatos = (indice,valor)=>{
+        let temp = datosForm;
+        temp[indice]=valor
+        setDatosForm({...temp ,...datosForm})
+    }
+    const enviarForm = async ()=>{
+        var tablaControlador = new Controlador('cliente');
+        await tablaControlador.obtenerTabla();
+
+        let form = {
+            "ruc":datosForm.ruc,
+            "nombre":datosForm.nombre,
+            "email":datosForm.mail
+        }
+        console.log(form);
+        console.log(tablaControlador);
+        await tablaControlador.nuevoRegistro(form);
+        console.log(tablaControlador.temporal)
+
+    }
     return(
         <View style={styles.container}>
             <Text/>
             <CampoSubTitulo valor="FORMULARIO ADMINISTRADOR DE CLIENTES"/>
             <Text/>
             <CampoItem valor="RUC"/>
-            <CampoTexto etiqueta='Ingrese el RUC' />
+            <CampoTexto etiqueta='Ingrese el RUC' valor={datosForm.ruc} eventoChange={(valor)=>guardarDatos("ruc",valor)} />
             <Text/>
             <CampoItem valor="Nombre y Apellido"/>
-            <CampoTexto etiqueta='Ingrese el nombre y apellido'></CampoTexto>
+            <CampoTexto etiqueta='Ingrese el nombre y apellido' valor={datosForm.nombre} eventoChange={(valor)=>guardarDatos("nombre",valor)}></CampoTexto>
             <Text/>
             <CampoItem valor="Email"/>
-            <CampoTexto etiqueta='Ingrese el email '></CampoTexto>
+            <CampoTexto etiqueta='Ingrese el email' valor={datosForm.mail} eventoChange={(valor)=>guardarDatos("mail",valor)} ></CampoTexto>
             <Text/>
-            <Boton mode="contained" onPress={() =>{console.log("test")}} > Administracion de productos</Boton>
+            <Boton mode="contained" onPress={() =>{enviarForm()}} > Administracion de productos</Boton>
         </View>
     );
  }
 
- function TablaAdminPacientes({datos}){
+ function TablaCliente({datos}){
     const cabecera = ["Codigo","Nombre","Precio Venta","Existencia"];
     return(
         <View style={styles.container}>
