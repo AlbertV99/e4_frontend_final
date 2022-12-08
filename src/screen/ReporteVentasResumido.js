@@ -42,11 +42,6 @@ export default function ReporteVentasResumido({navigation}) {
                             style:{backgroundColor:tema.colors.primario,borderColor:"white"}
                         },
                         {
-                            value: 'editar',
-                            label: 'Editar',
-                            style:{backgroundColor:tema.colors.primario,borderColor:"white"}
-                        },
-                        {
                             value: 'volver',
                             label: 'Volver',
                             style:{backgroundColor:tema.colors.primario,borderColor:"white"}
@@ -56,9 +51,7 @@ export default function ReporteVentasResumido({navigation}) {
             </View>
             <Text></Text>
             <ScrollView>
-                {form && <FormularioAdminPcientes ></FormularioAdminPcientes>}
                 {tabla && <TablaAdminPacientes/>}
-                {editar && <Editar/>}
             </ScrollView>
 
         </View>
@@ -68,25 +61,31 @@ export default function ReporteVentasResumido({navigation}) {
 
 
  function TablaAdminPacientes(){
+    const [visibleFiltro, setVisibleFiltro] = useState(false);
    
     return(
         <View style={styles.container}>
             <Text/>
             <CampoSubTitulo valor="TABLA REPORTE VENTAS RESUMIDO"/>
-            
-
-        </View>
-    );
- }
-
- function Editar(){
-   
-    return(
-        <View style={styles.container}>
+            <Boton mode="contained" onPress={()=>setVisibleFiltro(!visibleFiltro)}>
+                Filtrar           
+            </Boton>
             <Text/>
-            <CampoSubTitulo valor="EDITAR REPORTE VENTAS RESUMIDO"/>
+            {visibleFiltro && <View onDismiss={()=>{setVisibleFiltro(false)}} contentContainerStyle={{backgroundColor: 'white', padding: 20,position:'absolute',top:0}}>
+                <CampoItem valor="Cliente"/>
+                <CampoTexto etiqueta="ingrese el cliente" />
+                <Text/>
+                <CampoItem valor="Fecha Desde"/>
+                <CampoTexto etiqueta='Ingrese la fecha desde' />
+                <Text/>
+                <CampoItem valor="Fecha Hasta"/>
+                <CampoTexto etiqueta='Ingrese la fecha hasta' />
+                <Text/>
+                <Boton mode="contained" >
+                    Guardar
+                </Boton>
+            </View>}  
 
-            
 
         </View>
     );
