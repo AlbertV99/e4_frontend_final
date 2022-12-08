@@ -1,19 +1,38 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { tema } from '../tema/tema'
-import { Boton,CampoSubTitulo,CampoTitulo, CampoItem, CampoTexto } from '../componentes';
+import { Controlador } from '../core/intermediario'
+import { Boton,CampoSubTitulo,CampoTitulo, CampoItem, CampoTexto, Tabla } from '../componentes';
 import { TextInput, SegmentedButtons,  Modal, Portal, Button, Provider, Checkbox} from 'react-native-paper';
 
 
-export default function AdminPacientes({navigation}) {
-    
+export default function AdminProductos({navigation}) {
     const [form,setForm] = useState(false);
     const [editar,setEditar] = useState(false);
     const [tabla,setTabla] = useState(false);
+    const [datosTabla,setDatosTabla] = useState([]);
+    
     const mostrarForm = (valor)=>{ setForm(valor); if (tabla && valor){setTabla(false)};if (editar && valor){setEditar(false)}};
     const mostrarEditar = (valor)=>{ setEditar(valor); if (tabla && valor){setTabla(false)};if (form && valor ){setForm(false)}};
     const mostrarTabla = (valor)=>{ setTabla(valor); if (form && valor ){setForm(false)};if (editar && valor){setEditar(false)}};
     const [value, setValue] = useState('');
+    
+    
+    /*CONTROLADOR */
+    let tablaControlador;
+    useEffect(()=>{
+        //tabla.nuevoRegistro({"codigo":"a51","nombre":"martillo","precio_venta":"55000","existencia":"10"});
+        tablaControlador=new Controlador("producto");
+        cargarTabla();
+
+    },[])
+    async function cargarTabla(){
+        await tablaControlador.obtenerTabla();
+        let temp = [ ] ;
+        tablaControlador.temporal.map((reg)=> { temp.push(Object.values(reg))})
+        setDatosTabla(temp);
+    }
+
     const boton = (valor)=>{
         if(valor == "nuevo"){
             mostrarForm(!form);
@@ -30,7 +49,7 @@ export default function AdminPacientes({navigation}) {
         <View style={{flex:1, backgroundColor: tema.fondo.color}}>
             <Text/>
             <Text/>
-            <CampoTitulo valor="ADMINISTRADOR DE PACIENTES"/>
+            <CampoTitulo valor="ADMINISTRADOR DE PRODUCTOS"/>
             <Text/>
             <View style={styles.button}>
                 <SegmentedButtons
@@ -64,8 +83,8 @@ export default function AdminPacientes({navigation}) {
             </View>
             <Text></Text>
             <ScrollView>
-                {form && <FormularioAdminPcientes ></FormularioAdminPcientes>}
-                {tabla && <TablaAdminPacientes/>}
+                {form && <FormularioAdminProductos ></FormularioAdminProductos>}
+                {tabla && <TablaAdminProductos datos={datosTabla}/>}
                 {editar && <Editar/>}
             </ScrollView>
 
@@ -73,11 +92,11 @@ export default function AdminPacientes({navigation}) {
     );
 }
 
- function FormularioAdminPcientes(){
+ function FormularioAdminProductos(){
     return(
         <View style={styles.container}>
             <Text/>
-            <CampoSubTitulo valor="FORMULARIO ADMINISTRADOR DE PACIENTES"/>
+            <CampoSubTitulo valor="FORMULARIO ADMINISTRADOR DE PRODUCTOS"/>
             <Text/>
             <CampoItem valor="Codigo"/>
             <CampoTexto etiqueta='Ingrese el codigo' />
@@ -96,13 +115,13 @@ export default function AdminPacientes({navigation}) {
     );
  }
 
- function TablaAdminPacientes(){
-   
+ function TablaAdminProductos({datos}){
+    const cabecera = ["Codigo","Nombre","Precio Venta","Existencia"];
     return(
         <View style={styles.container}>
             <Text/>
-            <CampoSubTitulo valor="TABLA ADMINISTRADOR DE PACIENTES"/>
-            
+            <CampoSubTitulo valor="TABLA ADMINISTRADOR DE PRODUCTOS"/>
+            <Tabla cabecera={cabecera} datos={datos}/>
 
         </View>
     );
@@ -113,7 +132,7 @@ export default function AdminPacientes({navigation}) {
     return(
         <View style={styles.container}>
             <Text/>
-            <CampoSubTitulo valor="EDITAR ADMINISTRADOR DE PACIENTES"/>
+            <CampoSubTitulo valor="EDITAR ADMINISTRADOR DE PRODUCTOS"/>
 
             
 
