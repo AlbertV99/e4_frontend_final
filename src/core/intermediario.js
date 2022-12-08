@@ -1,4 +1,5 @@
-import { Storage } from 'expo-storage'
+import { Storage } from 'expo-storage';
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
 //PLANTILLAS
@@ -27,44 +28,43 @@ const vtaProductos = {
     "detalle":[]
 }
 
-const VTA_CABECERA = "vta_detalle"
+const VTA_DETALLE = "vta_detalle"
 const detalle = {
     "producto":"",
     "cantidad":"",
     "total":""
 }
-
-let Tabla = (tabla)=>{
-    const clave = tabla;
-    let temporal = [];
-    const obtenerTabla = ()=>{
-        temporal = JSON.parse(await Storage.getItem({ tabla:`${clave}`}))
+export function Controlador(tabla){
+    this.clave = tabla;
+    this.temporal = [];
+    this.obtenerTabla = async ()=>{
+        console.log(this.clave)
+        let temp  = JSON.parse(await Storage.getItem({ key:`${this.clave}`}))
+        this.temporal = (temp.length > 0)? temp : [];
+    }
+    this.guardarTabla = async () =>{
+        await Storage.setItem({key: `${this.clave}`, value:JSON.stringify(this.temporal)})
     }
 
-    const guardarTabla = () =>{
-        await Storage.setItem({tabla: `${clave}`, value:JSON.stringify(temporal)})
-    }
-
-    const nuevoRegistro = (datos) => {
+    this.nuevoRegistro = (datos) => {
         datos.id=uuidv4();
-        temporal.push(datos);
+        this.temporal.push(datos);
         this.guardarTabla();
     }
-    const eliminarRegistro = (id) => {
-        temporal = temporal.filter((registro)=>{ registro.id !== id })
+    this.eliminarRegistro = (id) => {
+        this.temporal = temporal.filter((registro)=>{ registro.id !== id })
         this.guardarTabla();
     }
-    const obtenerRegistroUnico = (id)=> {
-        registro = temporal.find((registro)=> { registro.id === id});
+
+    this.obtenerRegistroUnico = (id)=> {
+        registro = this.temporal.find((registro)=> { registro.id === id});
         return registro;
 
     }
-    const actualizarRegistro = (id,dato)=>{
-        registro = temporal.find((registro)=> { registro.id === id});
+    this.actualizarRegistro = (id,dato)=>{
+        registro = this.temporal.find((registro)=> { registro.id === id});
         return registro;
 
     }
-
-
 
 }
