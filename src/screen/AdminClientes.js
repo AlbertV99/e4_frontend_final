@@ -1,19 +1,39 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { tema } from '../tema/tema'
-import { Boton,CampoSubTitulo,CampoTitulo, CampoItem, CampoTexto } from '../componentes';
+import { Controlador } from '../core/intermediario'
+import { Boton,CampoSubTitulo,CampoTitulo, CampoItem, CampoTexto,Tabla } from '../componentes';
 import { TextInput, SegmentedButtons,  Modal, Portal, Button, Provider, Checkbox} from 'react-native-paper';
-
+//tabla.nuevoRegistro({"codigo":"a51","nombre":"martillo","precio_venta":"55000","existencia":"10"})
+//tabla.nuevoRegistro({"ruc":"","nombre":"","email":""})
 
 export default function AdminClientes({navigation}) {
-    
+
     const [form,setForm] = useState(false);
     const [editar,setEditar] = useState(false);
     const [tabla,setTabla] = useState(false);
+    const [datosTabla,setDatosTabla] = useState([]);
+
     const mostrarForm = (valor)=>{ setForm(valor); if (tabla && valor){setTabla(false)};if (editar && valor){setEditar(false)}};
     const mostrarEditar = (valor)=>{ setEditar(valor); if (tabla && valor){setTabla(false)};if (form && valor ){setForm(false)}};
     const mostrarTabla = (valor)=>{ setTabla(valor); if (form && valor ){setForm(false)};if (editar && valor){setEditar(false)}};
     const [value, setValue] = useState('');
+
+    /*CONTROLADOR */
+    let tablaControlador;
+    useEffect(()=>{
+        tablaControlador=new Controlador("producto");
+        cargarTabla();
+
+    },[])
+    async function cargarTabla(){
+        await tablaControlador.obtenerTabla();
+        let temp = [ ] ;
+        tablaControlador.temporal.map((reg)=> { temp.push(Object.values(reg))})
+        setDatosTabla(temp);
+    }
+
+
     const boton = (valor)=>{
         if(valor == "nuevo"){
             mostrarForm(!form);
@@ -44,7 +64,7 @@ export default function AdminClientes({navigation}) {
                             style:{backgroundColor:tema.colors.primario,borderColor:"white"}
                         },
                         {
-                            
+
                             value: 'nuevo',
                             label: 'Nuevo',
                             style:{backgroundColor:tema.colors.primario,borderColor:"white"}
@@ -65,15 +85,15 @@ export default function AdminClientes({navigation}) {
             <Text></Text>
             <ScrollView>
                 {form && <FormularioAdminPcientes ></FormularioAdminPcientes>}
-                {tabla && <TablaAdminPacientes/>}
+                {tabla && <TablaAdminPacientes datos={datosTabla}/>}
                 {editar && <Editar/>}
             </ScrollView>
-
         </View>
     );
 }
 
  function FormularioAdminPcientes(){
+
     return(
         <View style={styles.container}>
             <Text/>
@@ -88,31 +108,31 @@ export default function AdminClientes({navigation}) {
             <CampoItem valor="Email"/>
             <CampoTexto etiqueta='Ingrese el email '></CampoTexto>
             <Text/>
-
+            <Boton mode="contained" onPress={() =>{console.log("test")}} > Administracion de productos</Boton>
         </View>
     );
  }
 
- function TablaAdminPacientes(){
-   
+ function TablaAdminPacientes({datos}){
+    const cabecera = ["Codigo","Nombre","Precio Venta","Existencia"];
     return(
         <View style={styles.container}>
             <Text/>
             <CampoSubTitulo valor="TABLA ADMINISTRADOR DE CLIENTES"/>
-            
+            <Tabla cabecera={cabecera} datos={datos}/>
 
         </View>
     );
  }
 
  function Editar(){
-   
+
     return(
         <View style={styles.container}>
             <Text/>
             <CampoSubTitulo valor="EDITAR ADMINISTRADOR DE CLIENTES"/>
 
-            
+
 
         </View>
     );
