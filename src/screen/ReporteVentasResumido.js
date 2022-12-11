@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { tema } from '../tema/tema'
-import { Boton,CampoSubTitulo,CampoTitulo, CampoItem, CampoTexto } from '../componentes';
+import { Boton,CampoSubTitulo,CampoTitulo, CampoItem, CampoTexto, Tabla } from '../componentes';
 import { TextInput, SegmentedButtons,  Modal, Portal, Button, Provider, Checkbox} from 'react-native-paper';
 
 
@@ -10,10 +10,11 @@ export default function ReporteVentasResumido({navigation}) {
     const [form,setForm] = useState(false);
     const [editar,setEditar] = useState(false);
     const [tabla,setTabla] = useState(false);
-    const mostrarForm = (valor)=>{ setForm(valor); if (tabla && valor){setTabla(false)};if (editar && valor){setEditar(false)}};
-    const mostrarEditar = (valor)=>{ setEditar(valor); if (tabla && valor){setTabla(false)};if (form && valor ){setForm(false)}};
-    const mostrarTabla = (valor)=>{ setTabla(valor); if (form && valor ){setForm(false)};if (editar && valor){setEditar(false)}};
+    const [datosTabla,setDatosTabla] = useState([]);
     const [value, setValue] = useState('');
+
+    const mostrarTabla = (valor)=>{ setTabla(valor); if (form && valor ){setForm(false)};if (editar && valor){setEditar(false)}};
+
     const boton = (valor)=>{
         if(valor == "panel"){
             mostrarTabla(!tabla);
@@ -51,7 +52,7 @@ export default function ReporteVentasResumido({navigation}) {
             </View>
             <Text></Text>
             <ScrollView>
-                {tabla && <TablaAdminPacientes/>}
+                {tabla && <TablaReporteResumido  datos={datosTabla}/>}
             </ScrollView>
 
         </View>
@@ -60,8 +61,9 @@ export default function ReporteVentasResumido({navigation}) {
 
 
 
- function TablaAdminPacientes(){
+ function TablaReporteResumido({datos}){
     const [visibleFiltro, setVisibleFiltro] = useState(false);
+    const cabecera = ["Cliente","Fecha","Total Venta","Factura"];
    
     return(
         <View style={styles.container}>
@@ -85,8 +87,7 @@ export default function ReporteVentasResumido({navigation}) {
                     Guardar
                 </Boton>
             </View>}  
-
-
+            <Tabla cabecera={cabecera} datos={datos}/>
         </View>
     );
  }

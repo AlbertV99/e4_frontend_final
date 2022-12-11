@@ -19,6 +19,6 @@ export default function Tabla({cabecera, datos}) {
 const styles = StyleSheet.create({
   bordetabla: { borderWidth: 2, borderColor: '#7B7D7D' },
   head: { height: 44, backgroundColor: '#4D5656' },
-  headText: { fontSize: 18, fontWeight: 'bold' , textAlign: 'center', color: 'white' },
+  headText: { fontSize: 15, fontWeight: 'bold' , textAlign: 'center', color: 'white' },
   text: { margin: 6, fontSize: 14 , color: 'white'},
 });

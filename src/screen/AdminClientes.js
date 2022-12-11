@@ -98,11 +98,13 @@ export default function AdminClientes({navigation}) {
  function FormularioCliente(){
 
     const [datosForm,setDatosForm]= useState({})
+
     const guardarDatos = (indice,valor)=>{
         let temp = datosForm;
         temp[indice]=valor
         setDatosForm({...temp ,...datosForm})
     }
+
     const enviarForm = async ()=>{
         var tablaControlador = new Controlador('cliente');
         await tablaControlador.obtenerTabla();
@@ -118,6 +120,7 @@ export default function AdminClientes({navigation}) {
         console.log(tablaControlador.temporal)
 
     }
+
     return(
         <View style={styles.container}>
             <Text/>
@@ -132,13 +135,13 @@ export default function AdminClientes({navigation}) {
             <CampoItem valor="Email"/>
             <CampoTexto etiqueta='Ingrese el email' valor={datosForm.mail} eventoChange={(valor)=>guardarDatos("mail",valor)} ></CampoTexto>
             <Text/>
-            <Boton mode="contained" onPress={() =>{enviarForm()}} > Administracion de productos</Boton>
+            <Boton mode="contained" onPress={() =>{enviarForm()}} >Guardar</Boton>
         </View>
     );
  }
 
  function TablaCliente({datos}){
-    const cabecera = ["Codigo","Nombre","Precio Venta","Existencia"];
+    const cabecera = ["Ruc","Nombre y Apellido","Email"];
     return(
         <View style={styles.container}>
             <Text/>

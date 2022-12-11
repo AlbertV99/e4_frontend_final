@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { tema } from '../tema/tema'
-import { Boton,CampoSubTitulo,CampoTitulo, CampoItem, CampoTexto } from '../componentes';
+import { Boton,CampoSubTitulo,CampoTitulo, CampoItem, CampoTexto, Tabla } from '../componentes';
 import { TextInput, SegmentedButtons,  Modal, Portal, Button, Provider, Checkbox} from 'react-native-paper';
 
 
@@ -10,10 +10,11 @@ export default function ReporteVentasDetallado({navigation}) {
     const [form,setForm] = useState(false);
     const [editar,setEditar] = useState(false);
     const [tabla,setTabla] = useState(false);
-    const mostrarForm = (valor)=>{ setForm(valor); if (tabla && valor){setTabla(false)};if (editar && valor){setEditar(false)}};
-    const mostrarEditar = (valor)=>{ setEditar(valor); if (tabla && valor){setTabla(false)};if (form && valor ){setForm(false)}};
-    const mostrarTabla = (valor)=>{ setTabla(valor); if (form && valor ){setForm(false)};if (editar && valor){setEditar(false)}};
+    const [datosTabla,setDatosTabla] = useState([]);
     const [value, setValue] = useState('');
+
+    const mostrarTabla = (valor)=>{ setTabla(valor); if (form && valor ){setForm(false)};if (editar && valor){setEditar(false)}};
+
     const boton = (valor)=>{
         if(valor == "panel"){
             mostrarTabla(!tabla);
@@ -51,7 +52,7 @@ export default function ReporteVentasDetallado({navigation}) {
             </View>
             <Text></Text>
             <ScrollView>
-                {tabla && <TablaAdminPacientes/>}
+                {tabla && <TablaReporteDetallado  datos={datosTabla}/>}
             </ScrollView>
 
         </View>
@@ -60,9 +61,10 @@ export default function ReporteVentasDetallado({navigation}) {
 
 
 
- function TablaAdminPacientes(){
+ function TablaReporteDetallado({datos}){
     const [visibleFiltro, setVisibleFiltro] = useState(false);
-   
+    const cabecera = ["Cliente","Fecha","Producto","Cantidad", "Total Detalle"];
+
     return(
         <View style={styles.container}>
             <Text/>
@@ -85,13 +87,13 @@ export default function ReporteVentasDetallado({navigation}) {
                     Enviar
                 </Boton>
             </View>}
+            <Text/>
+            <Tabla cabecera={cabecera} datos={datos}/>
         </View>
 
         
     );
  }
-
-
 
 
 const styles = StyleSheet.create({

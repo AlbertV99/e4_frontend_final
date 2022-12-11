@@ -7,6 +7,7 @@ import { TextInput, SegmentedButtons,  Modal, Portal, Button, Provider, Checkbox
 
 
 export default function AdminProductos({navigation}) {
+
     const [form,setForm] = useState(false);
     const [editar,setEditar] = useState(false);
     const [tabla,setTabla] = useState(false);
@@ -31,6 +32,9 @@ export default function AdminProductos({navigation}) {
         let temp = [ ] ;
         tablaControlador.temporal.map((reg)=> { temp.push(Object.values(reg))})
         setDatosTabla(temp);
+    }
+    const retControlador= () => {
+        return tablaControlador;
     }
 
     const boton = (valor)=>{
@@ -83,7 +87,7 @@ export default function AdminProductos({navigation}) {
             </View>
             <Text></Text>
             <ScrollView>
-                {form && <FormularioAdminProductos ></FormularioAdminProductos>}
+                {form && <FormularioAdminProductos controlador={retControlador}></FormularioAdminProductos>}
                 {tabla && <TablaAdminProductos datos={datosTabla}/>}
                 {editar && <Editar/>}
             </ScrollView>
@@ -93,24 +97,50 @@ export default function AdminProductos({navigation}) {
 }
 
  function FormularioAdminProductos(){
+
+    const [datosForm,setDatosForm]= useState({})
+
+    const guardarDatos = (indice,valor)=>{
+        let temp = datosForm;
+        temp[indice]=valor
+        setDatosForm({...temp ,...datosForm})
+    }
+
+    const enviarForm = async ()=>{
+        var tablaControlador = new Controlador('producto');
+        await tablaControlador.obtenerTabla();
+
+        let form = {
+            "codigo":datosForm.codigo,
+            "nombre":datosForm.nombre,
+            "precio_venta":datosForm.precio_venta,
+            "existencia":datosForm.existencia
+        }
+        console.log(form);
+        console.log(tablaControlador);
+        await tablaControlador.nuevoRegistro(form);
+        console.log(tablaControlador.temporal)
+
+    }
+
     return(
         <View style={styles.container}>
             <Text/>
             <CampoSubTitulo valor="FORMULARIO ADMINISTRADOR DE PRODUCTOS"/>
             <Text/>
-            <CampoItem valor="Codigo"/>
-            <CampoTexto etiqueta='Ingrese el codigo' />
+            <CampoItem valor="Codigo" />
+            <CampoTexto etiqueta='Ingrese el codigo' valor={datosForm.codigo} eventoChange={(valor)=>guardarDatos("codigo",valor)}/>
             <Text/>
             <CampoItem valor="Nombre"/>
-            <CampoTexto etiqueta='Ingrese el nombre'></CampoTexto>
+            <CampoTexto etiqueta='Ingrese el nombre' valor={datosForm.nombre} eventoChange={(valor)=>guardarDatos("nombre",valor)}></CampoTexto>
             <Text/>
             <CampoItem valor="Precio de venta"/>
-            <CampoTexto etiqueta='Ingrese el precio de venta '></CampoTexto>
+            <CampoTexto etiqueta='Ingrese el precio de venta ' valor={datosForm.precio_venta} eventoChange={(valor)=>guardarDatos("precio_venta",valor)}></CampoTexto>
             <Text/>
             <CampoItem valor="Existencia"/>
-            <CampoTexto etiqueta='Ingrese S: si existe y N: si no existe'></CampoTexto>
+            <CampoTexto etiqueta='Ingrese S: si existe y N: si no existe' valor={datosForm.existencia} eventoChange={(valor)=>guardarDatos("existencia",valor)}></CampoTexto>
             <Text/>
-
+            <Boton mode="contained" onPress={() =>{enviarForm()}} >Guardar</Boton>  
         </View>
     );
  }
