@@ -40,7 +40,7 @@ export function Controlador(tabla){
     this.obtenerTabla = async ()=>{
         console.log(this.clave)
         let temp  = JSON.parse(await Storage.getItem({ key:`${this.clave}`}))
-        this.temporal = (temp.length > 0)? temp : [];
+        this.temporal = (temp != null && temp.length > 0)? temp : [];
     }
     this.guardarTabla = async () =>{
         await Storage.setItem({key: `${this.clave}`, value:JSON.stringify(this.temporal)})
