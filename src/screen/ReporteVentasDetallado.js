@@ -62,8 +62,34 @@ export default function ReporteVentasDetallado({navigation}) {
 
 
  function TablaReporteDetallado({datos}){
+
+    var tablaControlador;
+    const [datosForm,setDatosForm]= useState({});
+    const [datosTabla,setDatosTabla] = useState([]);
     const [visibleFiltro, setVisibleFiltro] = useState(false);
-    const cabecera = ["Cliente","Fecha","Producto","Cantidad", "Total Detalle"];
+    const cabecera = ["Cliente","Fecha","Producto","Cantidad", "Total Detalle", "Id"];
+
+    const guardarDatos = (indice,valor)=>{
+        let temp = datosForm;
+        temp[indice]=valor
+        setDatosForm({...temp ,...datosForm})
+    }
+
+    async function cargarTabla(){
+        await tablaControlador.obtenerTabla();
+        let temp = [ ] ;
+
+        tablaControlador.temporal.map((reg)=> { 
+            if(datosForm.producto !=  reg.nombre){
+                return ''
+            }else if((datosForm.fecha_desde > reg.fecha) &&( datosForm.fecha_hasta < reg.fecha)){
+                return ''
+            }
+            temp.push(Object.values(reg))})
+            setDatosTabla(temp);
+    }
+
+
 
     return(
         <View style={styles.container}>
@@ -75,15 +101,15 @@ export default function ReporteVentasDetallado({navigation}) {
             <Text/>
             {visibleFiltro && <View onDismiss={()=>{setVisibleFiltro(false)}} contentContainerStyle={{backgroundColor: 'white', padding: 20,position:'absolute',top:0}}>
                 <CampoItem valor="Producto"/>
-                <CampoTexto etiqueta="ingrese el Producto" />
+                <CampoTexto etiqueta="ingrese el Producto" valor={datosForm.producto} eventoChange={(valor)=>guardarDatos("producto",valor)}/>
                 <Text/>
                 <CampoItem valor="Fecha Desde"/>
-                <CampoTexto etiqueta='Ingrese la fecha desde' />
+                <CampoTexto etiqueta='Ingrese la fecha desde' valor={datosForm.fecha_desde} eventoChange={(valor)=>guardarDatos("fecha_desde",valor)}/>
                 <Text/>
                 <CampoItem valor="Fecha Hasta"/>
-                <CampoTexto etiqueta='Ingrese la fecha hasta' />
+                <CampoTexto etiqueta='Ingrese la fecha hasta' valor={datosForm.fecha_hasta} eventoChange={(valor)=>guardarDatos("fecha_hasta",valor)}/>
                 <Text/>
-                <Boton mode="contained" >
+                <Boton mode="contained" onPress={() =>{cargarTabla()}} >
                     Enviar
                 </Boton>
             </View>}

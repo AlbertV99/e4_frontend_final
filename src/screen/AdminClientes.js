@@ -141,7 +141,7 @@ export default function AdminClientes({navigation}) {
  }
 
  function TablaCliente({datos}){
-    const cabecera = ["Ruc","Nombre y Apellido","Email"];
+    const cabecera = ["Ruc","Nombre y Apellido","Email", "Id"];
     return(
         <View style={styles.container}>
             <Text/>
