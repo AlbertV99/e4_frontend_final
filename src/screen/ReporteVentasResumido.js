@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { tema } from '../tema/tema'
+import { Controlador } from '../core/intermediario'
 import { Boton,CampoSubTitulo,CampoTitulo, CampoItem, CampoTexto, Tabla } from '../componentes';
 import { TextInput, SegmentedButtons,  Modal, Portal, Button, Provider, Checkbox} from 'react-native-paper';
 
@@ -14,6 +15,23 @@ export default function ReporteVentasResumido({navigation}) {
     const [value, setValue] = useState('');
 
     const mostrarTabla = (valor)=>{ setTabla(valor); if (form && valor ){setForm(false)};if (editar && valor){setEditar(false)}};
+
+    let tablaControlador;
+    useEffect(()=>{
+        //tabla.nuevoRegistro({"codigo":"a51","nombre":"martillo","precio_venta":"55000","existencia":"10"});
+        tablaControlador=new Controlador("vta_cabecera");
+        cargarTabla();
+
+    },[])
+    async function cargarTabla(){
+        await tablaControlador.obtenerTabla();
+        let temp = [ ] ;
+        tablaControlador.temporal.map((reg)=> { temp.push(Object.values(reg))})
+        setDatosTabla(temp);
+    }
+    const retControlador= () => {
+        return tablaControlador;
+    }
 
     const boton = (valor)=>{
         if(valor == "panel"){
@@ -52,7 +70,7 @@ export default function ReporteVentasResumido({navigation}) {
             </View>
             <Text></Text>
             <ScrollView>
-                {tabla && <TablaReporteResumido  datos={datosTabla}/>}
+                {tabla && <TablaReporteResumido  />}
             </ScrollView>
 
         </View>
@@ -61,33 +79,35 @@ export default function ReporteVentasResumido({navigation}) {
 
 
 
- function TablaReporteResumido({datos}){
+ function TablaReporteResumido(){
 
-    var tablaControlador;
     const [datosTabla,setDatosTabla] = useState([]);
-    const [visibleFiltro, setVisibleFiltro] = useState(false);
-    const cabecera = ["Cliente","Fecha","Total Venta","Factura"];
+    var tablaControlador;
 
-    const guardarDatos = (indice,valor)=>{
-        let temp = datosForm;
-        temp[indice]=valor
-        setDatosForm({...temp ,...datosForm})
-    }
-
-    async function cargarTabla(){
-        await tablaControlador.obtenerTabla();
-        let temp = [ ] ;
-
-        tablaControlador.temporal.map((reg)=> { 
-            if(datosForm.cliente !=  reg.nombre){
-                return ''
-            }else if((datosForm.fecha_desde > reg.fecha) &&( datosForm.fecha_hasta < reg.fecha)){
-                return ''
-            }
-            temp.push(Object.values(reg))})
-            setDatosTabla(temp);
-    }
-   
+    useEffect(()=>{
+        tablaControlador=new Controlador("vta_cabecera");
+        cargarTabla();
+    },[])
+   async function cargarTabla(){
+       await tablaControlador.obtenerTabla();
+       let temp = [ ] ;
+       console.log(tablaControlador.temporal[0])
+       tablaControlador.temporal.map((reg)=> {
+           let tempReg = {
+               "fecha":reg.cabecera.fecha,
+               "factura":reg.cabecera.numeroFactura,
+               "cliente":reg.cabecera.cliente.nombre,
+               "ruc":reg.cabecera.cliente.ruc,
+               "total":reg.cabecera.total,
+           };
+           console.log(tempReg,"Test")
+           temp.push(Object.values(tempReg));
+       })
+       setDatosTabla(temp);
+   }
+ 
+   const cabecera = ["Cliente","Fecha","Total Venta","Factura"];
+   const [visibleFiltro, setVisibleFiltro] = useState(false);
     return(
         <View style={styles.container}>
             <Text/>
@@ -98,19 +118,19 @@ export default function ReporteVentasResumido({navigation}) {
             <Text/>
             {visibleFiltro && <View onDismiss={()=>{setVisibleFiltro(false)}} contentContainerStyle={{backgroundColor: 'white', padding: 20,position:'absolute',top:0}}>
                 <CampoItem valor="Cliente"/>
-                <CampoTexto etiqueta="ingrese el cliente" valor={datosForm.cliente} eventoChange={(valor)=>guardarDatos("cliente",valor)}/>
+                <CampoTexto etiqueta="ingrese el cliente" />
                 <Text/>
                 <CampoItem valor="Fecha Desde"/>
-                <CampoTexto etiqueta='Ingrese la fecha desde' valor={datosForm.fecha_desde} eventoChange={(valor)=>guardarDatos("fecha_desde",valor)}/>
+                <CampoTexto etiqueta='Ingrese la fecha desde' />
                 <Text/>
                 <CampoItem valor="Fecha Hasta"/>
-                <CampoTexto etiqueta='Ingrese la fecha hasta' valor={datosForm.fecha_hasta} eventoChange={(valor)=>guardarDatos("fecha_hasta",valor)}/>
+                <CampoTexto etiqueta='Ingrese la fecha hasta' />
                 <Text/>
-                <Boton mode="contained" onPress={() =>{cargarTabla()}}>
+                <Boton mode="contained" >
                     Guardar
                 </Boton>
             </View>}  
-            <Tabla cabecera={cabecera} datos={datos}/>
+            <Tabla cabecera={cabecera} datos={datosTabla}/>
         </View>
     );
  }
