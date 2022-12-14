@@ -122,6 +122,7 @@ export default function AdminProductos({navigation}) {
         console.log(tablaControlador.temporal)
 
     }
+    
 
     return(
         <View style={styles.container}>
@@ -146,7 +147,7 @@ export default function AdminProductos({navigation}) {
  }
 
  function TablaAdminProductos({datos}){
-    const cabecera = ["Codigo","Nombre","Precio Venta","Existencia"];
+    const cabecera = ["Codigo","Nombre","Precio Venta","Existencia", "Id"];
     return(
         <View style={styles.container}>
             <Text/>
