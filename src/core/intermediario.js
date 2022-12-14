@@ -23,14 +23,14 @@ const vtaProductos = {
     "id":"",
     "fecha":"",
     "numeroFactura":"",
-    "cliente":"",
+    "cliente":{"id":"","ruc":"","nombre":"","email":""},
     "total":"",
     "detalle":[]
 }
 
 const VTA_DETALLE = "vta_detalle"
 const detalle = {
-    "producto":"",
+    "producto":{"codigo":"","nombre":"","precio_venta":"","existencia":""},
     "cantidad":"",
     "total":""
 }
