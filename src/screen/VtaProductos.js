@@ -181,13 +181,38 @@ export default function VtaProductos({navigation}) {
     );
  }
 
- function TablaAdminProductos({datos}){
-    const cabecera = ["Codigo","Nombre","Precio Venta","Existencia"];
+ function TablaAdminProductos(){
+     const [datosTabla,setDatosTabla] = useState([]);
+     var tablaControlador;
+
+     useEffect(()=>{
+         tablaControlador=new Controlador("vta_cabecera");
+         cargarTabla();
+
+     },[])
+    async function cargarTabla(){
+        await tablaControlador.obtenerTabla();
+        let temp = [ ] ;
+        tablaControlador.temporal.map((reg)=> {
+            let tempReg = {
+                "fecha":reg.cabecera.fecha,
+                "factura":reg.cabecera.numeroFactura,
+                "cliente":reg.cabecera.cliente.nombre,
+                "ruc":reg.cabecera.cliente.ruc,
+                "total":reg.cabecera.total,
+
+            };
+            console.log(tempReg,"Test")
+            temp.push(Object.values(tempReg));
+        })
+        setDatosTabla(temp);
+    }
+    const cabecera = ["fecha","NFact","Cliente","R.U.C.","Total"];
     return(
         <View style={styles.container}>
             <Text/>
             <CampoSubTitulo valor="TABLA ADMINISTRADOR DE PRODUCTOS"/>
-            <Tabla cabecera={cabecera} datos={datos}/>
+            <Tabla cabecera={cabecera} datos={datosTabla}/>
 
         </View>
     );
